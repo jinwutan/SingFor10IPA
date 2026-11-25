@@ -40,16 +40,14 @@ SingFor10/
 ### 路径 A：GitHub Actions 云端构建（无需 Mac，推荐）
 
 1. 在 GitHub 新建一个**公开**仓库（公开仓库的 Actions 分钟数免费）。
-2. 把本目录 `SingFor10/` 下的**全部内容**（含隐藏的 `.github` 目录）上传到仓库根目录：
+2. 本目录已初始化 Git 并提交了全部文件（含隐藏的 `.github` 工作流）。
+   在工程目录打开终端，执行：
    ```bash
-   git init
-   git add .
-   git commit -m "SingFor10"
-   git branch -M main
    git remote add origin https://github.com/<你的用户名>/<仓库名>.git
+   git branch -M main
    git push -u origin main
    ```
-   > Windows 上若 `.github` 目录未被 `git add .` 纳入，用 `git add -f .github` 强制添加。
+   > 若你改动了文件，先 `git add -A && git commit -m "update"` 再 push。
 3. 推送后进入仓库 **Actions** 页，等待 `Build SingFor10 IPA` 工作流跑完（约 3–6 分钟）。
 4. 在本次运行的 **Artifacts** 区下载 `SingFor10-IPA`，解压得到：
    - `SingFor10-unsigned.ipa`
