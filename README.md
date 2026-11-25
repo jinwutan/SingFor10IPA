@@ -125,3 +125,4 @@ App 运行在 iOS 沙盒内，以下操作属于**系统级行为**，任何第�
 - `ViewController.swift` 中 `totalDuration` 修改时长（默认 600 秒）。
 - `AudioEngine.swift` 中 `melody` 数组可替换为任意频率序列，`noteDuration` 控制节奏，`sampleRate` 控制采样率。
 - `AudioEngine.swift` 中谐波系数可调整音色。
+# trigger build
