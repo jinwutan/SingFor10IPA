@@ -1,0 +1,73 @@
+name: Build SingFor10 IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'SingFor10/**'
+      - 'SingFor10.xcodeproj/**'
+      - '.github/workflows/build-ipa.yml'
+
+jobs:
+  build:
+    name: Build unsigned IPA
+    runs-on: macos-14
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Archive (unsigned)
+        run: |
+          set -euo pipefail
+          mkdir -p "$GITHUB_WORKSPACE/build"
+          xcodebuild \
+            -project SingFor10.xcodeproj \
+            -scheme SingFor10 \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath "$GITHUB_WORKSPACE/build/SingFor10.xcarchive" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            SKIP_INSTALL=NO \
+            clean archive
+
+      - name: Verify archived app
+        run: |
+          set -euo pipefail
+          APP="$GITHUB_WORKSPACE/build/SingFor10.xcarchive/Products/Applications/SingFor10.app"
+          test -d "$APP"
+          echo "Archived app found: $APP"
+          /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" "$APP/Info.plist"
+          /usr/libexec/PlistBuddy -c "Print :UIBackgroundModes" "$APP/Info.plist"
+
+      - name: Pack unsigned IPA
+        run: |
+          set -euo pipefail
+          OUT="$GITHUB_WORKSPACE/build/output"
+          APP="$GITHUB_WORKSPACE/build/SingFor10.xcarchive/Products/Applications/SingFor10.app"
+          mkdir -p "$OUT"
+          rm -rf "$OUT/Payload"
+          mkdir -p "$OUT/Payload"
+          cp -R "$APP" "$OUT/Payload/SingFor10.app"
+          cd "$OUT"
+          zip -qry SingFor10-unsigned.ipa Payload
+          # 同时提供 .ipa 通用名，便于侧载工具识别
+          cp SingFor10-unsigned.ipa SingFor10.ipa
+          shasum -a 256 SingFor10-unsigned.ipa | tee SHA256SUMS.txt
+          ls -lh "$OUT"/*.ipa
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SingFor10-IPA
+          path: |
+            build/output/*.ipa
+            build/output/SHA256SUMS.txt
+          if-no-files-found: error
+          retention-days: 90
