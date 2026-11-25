@@ -85,7 +85,8 @@ bash scripts/build-ipa.sh
 6. iPhone 上进入 **设置 → 通用 → VPN与设备管理 → 你的 Apple ID → 信任**。
 7. 如果不幸出现「未受信任的企业级开发者」，重复第 6 步即可。
 
-> 免费 Apple ID 签名的 App 有效期 7 天，到期需重新侧载；保持 Sideloadly 的 AltServer 类后台刷新可续期。
+> 免费 Apple ID 签名的 App 有效期为 7 天，到期后重新打开 Sideloadly 再点一次 **Start** 续签即可。
+> 若改用 AltStore/AltServer 方案，可在同一 WiFi 下由后台服务自动续签。
 
 **模拟器限制**：`MPVolumeView` 的滑块在模拟器上无法真正改变系统音量，
 音量守卫功能请在真机上验证；音频合成、倒计时、后台播放在模拟器上正常。
