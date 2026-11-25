@@ -1,4 +1,5 @@
 name: Build SingFor10 IPA
+# force reindex
 
 on:
   workflow_dispatch:
